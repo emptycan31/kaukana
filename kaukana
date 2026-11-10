@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ちょっと待って買い物チェック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF3F4;--surface:#FFFFFF;--ink:#1B2A31;--sub:#5B6D75;--line:#D3DEE1;--save:#1F7A80;--save-bg:#DDF0F0;--buy:#A8631A;--buy-bg:#F8E8D3;--hold:#4F5F9A;--hold-bg:#E4E8F6;--danger:#B3382C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101A1E;--surface:#192529;--ink:#E7F0F2;--sub:#97ABB2;--line:#2B3C42;--save:#5CC8CE;--save-bg:#16373A;--buy:#E8A964;--buy-bg:#3B2C18;--hold:#9FADE6;--hold-bg:#262C4A;--danger:#F0877B}}
+:root[data-theme="dark"]{--bg:#101A1E;--surface:#192529;--ink:#E7F0F2;--sub:#97ABB2;--line:#2B3C42;--save:#5CC8CE;--save-bg:#16373A;--buy:#E8A964;--buy-bg:#3B2C18;--hold:#9FADE6;--hold-bg:#262C4A;--danger:#F0877B}
+*{box-sizing:border-box}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;line-height:1.7;font-size:16px}
+main{max-width:480px;margin:0 auto;padding:20px 16px 56px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--save);outline-offset:2px}
+.month{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.month b{font-size:1.05rem;font-weight:700}
+.nav{width:44px;height:44px;border:1px solid var(--line);background:var(--surface);border-radius:50%;font-size:1.1rem}
+.nav:disabled{opacity:.35;cursor:default}
+.hero{background:var(--save-bg);border-radius:24px;padding:28px 22px 24px;margin-bottom:20px}
+.hero p{margin:0;color:var(--sub);font-size:.9rem}
+.big{font-size:3.2rem;font-weight:700;line-height:1.15;color:var(--save);letter-spacing:-.01em;word-break:break-all}
+.hero .sub{margin-top:10px;display:flex;gap:18px;flex-wrap:wrap;font-size:.9rem;color:var(--ink)}
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px 18px;margin-bottom:20px}
+h2{font-size:1.1rem;margin:0 0 4px;font-weight:700}
+.lead{margin:0 0 14px;color:var(--sub);font-size:.9rem}
+label{display:block;font-size:.85rem;color:var(--sub);margin:10px 0 4px}
+input{width:100%;font:inherit;font-size:1rem;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+.q{padding:12px 0;border-top:1px solid var(--line)}
+.q:first-of-type{margin-top:14px}
+.q span{display:block;margin-bottom:8px;font-weight:500}
+.yn{display:flex;gap:8px}
+.yn button{flex:1;padding:10px;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;min-height:44px}
+.yn button[aria-pressed="true"]{border-color:var(--save);background:var(--save-bg);font-weight:700}
+.verdict{margin:14px 0;padding:14px;border-radius:14px;background:var(--bg);font-size:.95rem}
+.verdict.v-save{background:var(--save-bg)}.verdict.v-hold{background:var(--hold-bg)}.verdict.v-buy{background:var(--buy-bg)}
+.verdict b{display:block;font-size:1.05rem}
+.err{color:var(--danger);font-size:.9rem;min-height:1.4em;margin:6px 0 0}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.acts .wide{grid-column:1/-1}
+.btn{padding:13px 10px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;min-height:48px}
+.btn.save{background:var(--save);border-color:var(--save);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.save{color:#0B1A1C}}
+:root[data-theme="dark"] .btn.save{color:#0B1A1C}
+.btn.buy{border-color:var(--buy);color:var(--buy)}
+.btn.hold{border-color:var(--hold);color:var(--hold)}
+ul{list-style:none;margin:12px 0 0;padding:0}
+li{padding:14px 0;border-top:1px solid var(--line)}
+li:first-child{border-top:0}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.row .n{font-weight:700;word-break:break-word}
+.row .p{white-space:nowrap}
+.tag{display:inline-block;font-size:.8rem;padding:1px 10px;border-radius:99px;margin-top:4px}
+.tag.s{background:var(--save-bg);color:var(--save)}.tag.b{background:var(--buy-bg);color:var(--buy)}.tag.h{background:var(--hold-bg);color:var(--hold)}
+.mini{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.mini button{padding:8px 12px;min-height:40px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);font-size:.85rem}
+.mini .del{color:var(--sub);border-color:transparent;background:none;text-decoration:underline}
+.empty{color:var(--sub);text-align:center;padding:18px 0 4px;margin:0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:99px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="month">
+    <button class="nav" id="prev" aria-label="前の月">‹</button>
+    <b id="mlabel"></b>
+    <button class="nav" id="next" aria-label="次の月">›</button>
+  </div>
+
+  <div class="hero" aria-live="polite">
+    <p>この月、買わずに節約できた金額</p>
+    <div class="big" id="saved">¥0</div>
+    <div class="sub"><span id="cnt">見送り 0件</span><span id="bought">買った 0円</span></div>
+  </div>
+
+  <section class="card">
+    <h2>買う前にチェック</h2>
+    <p class="lead">欲しいものと金額を入れて、4つの質問に答えてください。</p>
+    <label for="name">欲しいもの</label>
+    <input id="name" maxlength="40" placeholder="例:新しいイヤホン" autocomplete="off">
+    <label for="price">金額(円)</label>
+    <input id="price" inputmode="numeric" placeholder="例:12000" autocomplete="off">
+    <div id="qs"></div>
+    <div class="verdict" id="verdict" aria-live="polite"></div>
+    <p class="err" id="err" role="alert"></p>
+    <div class="acts">
+      <button class="btn save wide" id="b-skip">買わない(節約に加える)</button>
+      <button class="btn buy" id="b-buy">買う</button>
+      <button class="btn hold" id="b-hold">1週間考える</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>この月の記録</h2>
+    <ul id="list"></ul>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  var KEY="kaukana-v1";
+  var items=[];
+  try{items=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){items=[]}
+  if(!Array.isArray(items))items=[];
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
+  function mk(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")}
+  var nowKey=mk(new Date());
+  var view=new Date();view.setDate(1);
+  var Q=["それがなくて困っている?","代わりになるものを持っていない?","1週間後も欲しいと思う?","今月の予算に入っている?"];
+  var ans=[null,null,null,null];
+  var $=function(id){return document.getElementById(id)};
+  function yen(n){return "¥"+Number(n).toLocaleString("ja-JP")}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  var tt;
+  function toast(t){var el=$("toast");el.textContent=t;el.className="toast on";clearTimeout(tt);tt=setTimeout(function(){el.className="toast"},2200)}
+
+  function renderQ(){
+    $("qs").innerHTML=Q.map(function(q,i){
+      return '<div class="q"><span>'+q+'</span><div class="yn">'+
+        '<button data-i="'+i+'" data-v="1" aria-pressed="'+(ans[i]===1)+'">はい</button>'+
+        '<button data-i="'+i+'" data-v="0" aria-pressed="'+(ans[i]===0)+'">いいえ</button></div></div>';
+    }).join("");
+    renderVerdict();
+  }
+  function renderVerdict(){
+    var el=$("verdict"),done=ans.every(function(a){return a!==null});
+    if(!done){el.className="verdict";el.innerHTML="4つ答えると、目安が表示されます。";return}
+    var y=ans.reduce(function(a,b){return a+b},0);
+    if(y>=4){el.className="verdict v-buy";el.innerHTML="<b>買って大丈夫そうです</b>必要で、予算にも入っています。"}
+    else if(y>=2){el.className="verdict v-hold";el.innerHTML="<b>1週間置いてみませんか</b>迷う気持ちがあるなら、少し時間をおくと答えが出ます。"}
+    else{el.className="verdict v-save";el.innerHTML="<b>見送りがおすすめです</b>「はい」が"+y+"個だけでした。今回はやめておくと節約になります。"}
+  }
+  $("qs").addEventListener("click",function(e){
+    var b=e.target.closest("button");if(!b)return;
+    ans[+b.dataset.i]=+b.dataset.v;renderQ();
+  });
+
+  function render(){
+    var key=mk(view);
+    $("mlabel").textContent=view.getFullYear()+"年"+(view.getMonth()+1)+"月";
+    $("next").disabled=key>=nowKey;
+    var list=items.filter(function(x){return x.month===key});
+    var skip=list.filter(function(x){return x.status==="skip"});
+    var buy=list.filter(function(x){return x.status==="buy"});
+    var sum=function(a){return a.reduce(function(s,x){return s+x.price},0)};
+    $("saved").textContent=yen(sum(skip));
+    $("cnt").textContent="見送り "+skip.length+"件";
+    $("bought").textContent="買った "+yen(sum(buy));
+    var ul=$("list");
+    if(!list.length){ul.innerHTML='<p class="empty">まだ記録がありません。気になるものをチェックしてみましょう。</p>';return}
+    var label={skip:["s","買わなかった"],buy:["b","買った"],hold:["h","考え中"]};
+    ul.innerHTML=list.slice().reverse().map(function(x){
+      var l=label[x.status];
+      var acts=x.status==="hold"?'<button data-a="skip" data-id="'+x.id+'">買わないことにした</button><button data-a="buy" data-id="'+x.id+'">買った</button>':"";
+      return '<li><div class="row"><span class="n">'+esc(x.name)+'</span><span class="p">'+yen(x.price)+'</span></div>'+
+        '<span class="tag '+l[0]+'">'+l[1]+'</span>'+
+        '<div class="mini">'+acts+'<button class="del" data-a="del" data-id="'+x.id+'">削除</button></div></li>';
+    }).join("");
+  }
+  $("list").addEventListener("click",function(e){
+    var b=e.target.closest("button");if(!b)return;
+    var id=b.dataset.id,a=b.dataset.a;
+    if(a==="del"){items=items.filter(function(x){return String(x.id)!==id});toast("削除しました")}
+    else{items.forEach(function(x){if(String(x.id)===id)x.status=a});toast(a==="skip"?"節約に加えました":"記録しました")}
+    save();render();
+  });
+  $("prev").onclick=function(){view.setMonth(view.getMonth()-1);render()};
+  $("next").onclick=function(){if(mk(view)<nowKey){view.setMonth(view.getMonth()+1);render()}};
+
+  function add(status){
+    var name=$("name").value.trim(),price=parseInt($("price").value.replace(/[^0-9]/g,""),10);
+    var err=$("err");
+    if(!name){err.textContent="欲しいものの名前を入力してください。";$("name").focus();return}
+    if(!price||price<=0){err.textContent="金額を数字で入力してください。";$("price").focus();return}
+    err.textContent="";
+    items.push({id:Date.now(),name:name,price:price,status:status,month:nowKey});
+    save();
+    $("name").value="";$("price").value="";ans=[null,null,null,null];renderQ();
+    view=new Date();view.setDate(1);render();
+    toast(status==="skip"?yen(price)+" 節約できました":status==="buy"?"記録しました":"考え中に入れました");
+  }
+  $("b-skip").onclick=function(){add("skip")};
+  $("b-buy").onclick=function(){add("buy")};
+  $("b-hold").onclick=function(){add("hold")};
+
+  renderQ();render();
+})();
+</script>
+</body>
+</html>
